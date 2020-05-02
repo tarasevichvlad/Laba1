@@ -25,7 +25,7 @@ namespace App1.Pages
 			var noteLabel = new Label { Text = "Note" };
 			var noteColor = new Label { Text = "Color" };
 			var body = new Editor { Text = note.Body, Placeholder = "Enter your note", AutoSize = EditorAutoSizeOption.TextChanges};
-			var tags = new Entry{ Text = note.Tags};
+			var tags = new Entry{ Text = note.tags };
 			var colors = new Picker();
 
 			colors.Items.Add(Color.Red.Name);
@@ -39,7 +39,7 @@ namespace App1.Pages
 			{
 				currentNote.Color = new ColorConvertor().Convert(colors.SelectedItem);
 				currentNote.Body = body.Text;
-				currentNote.Tags = tags.Text;
+				currentNote.tags = tags.Text;
 				currentNote.Date = DateTime.Now;
 				Save(currentNote);
 				await Navigation.PopModalAsync();

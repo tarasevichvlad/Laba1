@@ -27,12 +27,20 @@ namespace App1
 
 		public void Init()
 		{
-			var groupLabel = new Label { Text = "Is group"};
+			var groupLabel = new Label { Text = "Is group by color"};
 			var groupSwitch = new Switch();
-			groupSwitch.IsToggled = true;
 			var groupLayout = new StackLayout
 			{
-				Children = { groupLabel, groupSwitch}
+				Orientation = StackOrientation.Horizontal,
+				Children = { groupSwitch, groupLabel }
+			};
+
+			var groupLabel1 = new Label { Text = "Is group by tags"};
+			var groupSwitch1 = new Switch();
+			var groupLayout1 = new StackLayout
+			{
+				Orientation = StackOrientation.Horizontal,
+				Children = { groupSwitch1, groupLabel1 }
 			};
 
 			var findInput =new Entry
@@ -61,17 +69,35 @@ namespace App1
 
 			var notes = _noteService.GetNotes();
 
-			var listNotesView = UpdateView(groupSwitch, header, notes);
+			var listNotesView = UpdateView(groupSwitch, groupSwitch1, header, notes);
 
 			listNotesView.ItemTapped += OnItemTapped;
 			newNoteButton.Clicked += NewNote;
-			groupSwitch.Toggled += Find;
+			groupSwitch.Toggled += (sender, args) =>
+			{
+				if ((sender as Switch).IsToggled)
+				{
+					groupSwitch1.IsToggled = false;
+				}
+				
+				Find(sender, args);
+			};
+			groupSwitch1.Toggled += (sender, args) =>
+			{
+				if ((sender as Switch).IsToggled)
+				{
+					groupSwitch.IsToggled = false;
+				}
+				
+				Find(sender, args);
+			};
+
 			findInput.TextChanged += Find;
 
 			void Find(object sender, EventArgs e)
 			{
 				var findItems = _noteService.Find(findInput.Text);
-				var view = UpdateView(groupSwitch, header, findItems);
+				var view = UpdateView(groupSwitch, groupSwitch1, header, findItems);
 
 				listNotesView.IsGroupingEnabled = view.IsGroupingEnabled;
 				listNotesView.ItemsSource = view.ItemsSource;
@@ -79,13 +105,14 @@ namespace App1
 			}
 
 			Padding = new Thickness(10, 0, 10, 0);
-			Content = new StackLayout { Children = { findLayer, groupLayout, listNotesView } };
+			Content = new StackLayout { Children = { findLayer, groupLayout, groupLayout1, listNotesView } };
 		}
 
-		public ListView UpdateView(Switch groupSwitch, Label header, IEnumerable<Note> notes)
+		public ListView UpdateView(Switch groupSwitch1, Switch groupSwitch2, Label header, IEnumerable<Note> notes)
 		{
-			if (groupSwitch.IsToggled)
+			if (groupSwitch1.IsToggled)
 			{
+				groupSwitch2.IsToggled = false;
 				return new ListView
 				{
 					IsGroupingEnabled = true,
@@ -94,6 +121,46 @@ namespace App1
 					HasUnevenRows = true,
 					ItemsSource = notes.GroupBy(x => x.color)
 						.Select(x => new Grouping<string, Note>(x.Key, x)),
+					ItemTemplate = new DataTemplate(() =>
+					{
+						var image = new BoxView();
+						image.SetBinding(BackgroundColorProperty, "Color");
+
+						var body = new Label();
+						body.SetBinding(Label.TextProperty, "Body");
+
+						var date = new Label();
+						date.SetBinding(Label.TextProperty, "Date");
+
+						return new ViewCell
+						{
+							View = new StackLayout
+							{
+								Orientation = StackOrientation.Horizontal,
+								Padding = new Thickness(0, 5),
+								Children = {image, body, date}
+							}
+						};
+					})
+				};
+			}
+
+			if (groupSwitch2.IsToggled)
+			{
+				groupSwitch1.IsToggled = false;
+				var items = notes
+					.GroupBy(x => x.Tags)
+					.SelectMany(x => x.Key.Select(y => new Grouping<string, Note>(y, x.Select(i => i))))
+					.GroupBy(x => x.Name)
+					.Select(x => new Grouping<string, Note>(x.Key, x.SelectMany(i => i.Select(p => p))));
+
+					return new ListView
+				{
+					IsGroupingEnabled = true,
+					GroupDisplayBinding = new Binding("Name"),
+					Header = header,
+					HasUnevenRows = true,
+					ItemsSource = items,
 					ItemTemplate = new DataTemplate(() =>
 					{
 						var image = new BoxView();
@@ -140,7 +207,7 @@ namespace App1
 						{
 							Orientation = StackOrientation.Horizontal,
 							Padding = new Thickness(0, 5),
-							Children = { image, body, date}
+							Children = { image, body, date }
 						}
 					};
 				})

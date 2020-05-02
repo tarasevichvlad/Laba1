@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using SQLite;
 
@@ -10,8 +11,15 @@ namespace App1.Contracts
 		[PrimaryKey, AutoIncrement, Column("_id")]
 		public int Id { get; set; }
 		public string Body { get; set; } = string.Empty;
-		public string Tags { get; set; }
+		public string tags { get; set; }
 		public string color { get; set; }
+
+		[Ignore]
+		public IEnumerable<string> Tags
+		{
+			get => tags.Split(new [] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			set => tags = string.Join(", ", value);
+		}
 
 		[Ignore]
 		public Color Color
