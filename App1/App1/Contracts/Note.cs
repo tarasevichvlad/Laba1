@@ -10,8 +10,9 @@ namespace App1.Contracts
 	{
 		[PrimaryKey, AutoIncrement, Column("_id")]
 		public int Id { get; set; }
+		public string Title { get; set; } = string.Empty;
 		public string Body { get; set; } = string.Empty;
-		public string tags { get; set; }
+		public string tags { get; set; } = string.Empty;
 		public string color { get; set; }
 
 		[Ignore]
@@ -35,6 +36,7 @@ namespace App1.Contracts
 			Body = note.Body;
 			Tags = note.Tags;
 			Color = note.Color;
+			Title = note.Title;
 		}
 	}
 }

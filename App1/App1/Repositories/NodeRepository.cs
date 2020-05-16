@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using App1.Contracts;
 using SQLite;
 
@@ -22,6 +23,11 @@ namespace App1.Repositories
 			return database.Table<Note>();
 		}
 
+		public IEnumerable<string> GetTags()
+		{
+			var notes =  database.Table<Note>();
+			return notes.SelectMany(s => s.Tags);
+		}
 		public Note GetNode(int id)
 		{
 			try

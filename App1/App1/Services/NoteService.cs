@@ -73,6 +73,11 @@ namespace App1.Services
 			if (CollectionChanged != null) CollectionChanged(this, null);
 		}
 
+		public IEnumerable<string> GetTags()
+		{
+			return _database.GetTags();
+		}
+
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
 	}
 }

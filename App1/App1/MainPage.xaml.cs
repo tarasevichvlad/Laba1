@@ -126,11 +126,21 @@ namespace App1
 						var image = new BoxView();
 						image.SetBinding(BackgroundColorProperty, "Color");
 
+						var title = new Label { FontSize = 15 };
+						title.SetBinding(Label.TextProperty, "Title");
+
 						var body = new Label();
 						body.SetBinding(Label.TextProperty, "Body");
 
 						var date = new Label();
 						date.SetBinding(Label.TextProperty, "Date");
+
+						var layout = new StackLayout
+						{
+							Orientation = StackOrientation.Vertical,
+							//Padding = new Thickness(0, 5),
+							Children = { title, body, date }
+						};
 
 						return new ViewCell
 						{
@@ -138,9 +148,10 @@ namespace App1
 							{
 								Orientation = StackOrientation.Horizontal,
 								Padding = new Thickness(0, 5),
-								Children = {image, body, date}
+								Children = { image, layout }
 							}
 						};
+
 					})
 				};
 			}
@@ -166,11 +177,21 @@ namespace App1
 						var image = new BoxView();
 						image.SetBinding(BackgroundColorProperty, "Color");
 
+						var title = new Label { FontSize = 15 };
+						title.SetBinding(Label.TextProperty, "Title");
+
 						var body = new Label();
 						body.SetBinding(Label.TextProperty, "Body");
 
 						var date = new Label();
 						date.SetBinding(Label.TextProperty, "Date");
+
+						var layout = new StackLayout
+						{
+							Orientation = StackOrientation.Vertical,
+							//Padding = new Thickness(0, 5),
+							Children = { title, body, date }
+						};
 
 						return new ViewCell
 						{
@@ -178,7 +199,7 @@ namespace App1
 							{
 								Orientation = StackOrientation.Horizontal,
 								Padding = new Thickness(0, 5),
-								Children = {image, body, date}
+								Children = { image, layout }
 							}
 						};
 					})
@@ -195,11 +216,21 @@ namespace App1
 					var image = new BoxView();
 					image.SetBinding(BackgroundColorProperty, "Color");
 
+					var title = new Label { FontSize = 15 };
+					title.SetBinding(Label.TextProperty, "Title");
+
 					var body = new Label();
 					body.SetBinding(Label.TextProperty, "Body");
 
 					var date = new Label();
 					date.SetBinding(Label.TextProperty, "Date");
+
+					var layout = new StackLayout
+					{
+						Orientation = StackOrientation.Vertical,
+						//Padding = new Thickness(0, 5),
+						Children = { title, body, date }
+					};
 
 					return new ViewCell
 					{
@@ -207,9 +238,10 @@ namespace App1
 						{
 							Orientation = StackOrientation.Horizontal,
 							Padding = new Thickness(0, 5),
-							Children = { image, body, date }
+							Children = { image, layout }
 						}
 					};
+
 				})
 			};
 		}
